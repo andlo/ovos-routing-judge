@@ -22,8 +22,8 @@ A failure in CI can then be reproduced on a device and judged the same way
 ```python
 from ovos_routing_judge import Claim, in_session, judge
 
-messages = in_session(recorded, session_id)        # Message objects or dicts
-claim = Claim.from_messages(messages, known_ids=loaded_skill_ids)
+claim = Claim.from_messages(recorded, known_ids=loaded_skill_ids,   # Message objects or dicts
+                            session_id=row_session_id)
 v = judge(claim, own_ids={"ovos-skill-date-time.openvoiceos"},
           expected="ovos-skill-date-time.openvoiceos:what_time_is_it",
           hung=timed_out, known_ids=loaded_skill_ids)
@@ -62,6 +62,12 @@ Signals come in tiers; the taker is the first known skill in the best tier:
 5. **speak**: it spoke in this session (`speak` or core 3's `ovos.utterance.speak`)
 
 `ovos.intent.unmatched` means nobody, whatever else was seen.
+
+With `session_id`, other sessions' messages are ignored, and a message
+without a session can show an intent, a provider or an OCP pick but never a
+tier 4 or 5 claim: unrelated skills' background activity (a scheduled
+event's handler, a fallback probe's reply) arrives without a session and is
+not theft (learned in ovos-test-harness's fleet suite).
 
 Intent names are compared in one spelling: `Name.intent` (ovos-workshop 1.x)
 vs `Name`, CamelCase in older releases vs snake_case, padatious

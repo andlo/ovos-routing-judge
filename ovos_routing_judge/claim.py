@@ -16,6 +16,13 @@ dispatched to:
   SPEAK     it spoke in this session
 
 `ovos.intent.unmatched` means nobody, whatever else was seen.
+
+With a session id, messages of other sessions are ignored, and a message
+without a session can still show an intent, provider or OCP pick, but not
+a SKILL or SPEAK claim: background activity of unrelated skills (a
+scheduled event's handler, a fallback probe's reply) lands in the same
+window without a session, and reading that as a claim gave false
+cross-skill theft in ovos-test-harness's fleet suite.
 """
 from dataclasses import dataclass, field
 from typing import Any, Iterable, List, Optional, Tuple
@@ -99,12 +106,15 @@ class Claim:
     provider_via: str = ""           # "the reading pipeline" or "OCP"
     awaiting_provider: bool = False  # a search went out, no provider yet
     spoke: List[str] = field(default_factory=list)
+    session_id: Optional[str] = None  # judge only this session (see module notes)
     count: int = 0                   # messages folded in
     _last_speak_type: str = ""
+    _sessionless: bool = False
 
     @classmethod
-    def from_messages(cls, messages: Iterable[Any], known_ids: Iterable[str] = ()) -> "Claim":
-        claim, known = cls(), set(known_ids)
+    def from_messages(cls, messages: Iterable[Any], known_ids: Iterable[str] = (),
+                      session_id: Optional[str] = None) -> "Claim":
+        claim, known = cls(session_id=session_id), set(known_ids)
         for m in messages:
             claim.observe(m, known)
         return claim
@@ -112,6 +122,8 @@ class Claim:
     # ---------------------------------------------------------------- folding
 
     def _add(self, tier, skill_id, topic="", source=""):
+        if tier in (SKILL, SPEAK) and self._sessionless:
+            return
         if skill_id:
             self.signals.append(Signal(tier, str(skill_id), topic, source))
 
@@ -121,6 +133,10 @@ class Claim:
         colon-containing types."""
         msg_type, data, context = message_parts(msg)
         known = known_ids if isinstance(known_ids, (set, frozenset)) else set(known_ids)
+        sid = session_of(msg)
+        if self.session_id and sid and sid != self.session_id:
+            return
+        self._sessionless = bool(self.session_id) and not sid
         self.count += 1
 
         if msg_type == UNMATCHED:

@@ -1,126 +1,61 @@
 [
-  {"name": "dispatched intent", "own": ["weather.ovos"], "known": ["weather.ovos", "date.ovos"],
-   "expected": "weather.ovos:current_weather",
-   "messages": [["recognizer_loop:utterance", {"utterances": ["what's the weather"]}],
-                ["weather.ovos:current_weather", {}],
-                ["speak", {"utterance": "sunny"}, {"skill_id": "weather.ovos"}]],
-   "kind": "hit", "taker": "weather.ovos", "via": "intent"},
+  {"name": "dispatched intent", "own": ["weather.ovos"], "known": ["weather.ovos", "date.ovos"], "expected": "weather.ovos:current_weather", "messages": [["recognizer_loop:utterance", {"utterances": ["what's the weather"]}], ["weather.ovos:current_weather", {}], ["speak", {"utterance": "sunny"}, {"skill_id": "weather.ovos"}]], "kind": "hit", "taker": "weather.ovos", "via": "intent"},
 
-  {"name": "ovos.intent.matched only (newer core)", "own": ["weather.ovos"], "known": ["weather.ovos"],
-   "expected": "current_weather",
-   "messages": [["ovos.intent.matched", {"intent_name": "current_weather", "skill_id": "weather.ovos"}]],
-   "kind": "hit", "taker": "weather.ovos"},
+  {"name": "ovos.intent.matched only (newer core)", "own": ["weather.ovos"], "known": ["weather.ovos"], "expected": "current_weather", "messages": [["ovos.intent.matched", {"intent_name": "current_weather", "skill_id": "weather.ovos"}]], "kind": "hit", "taker": "weather.ovos"},
 
-  {"name": "CamelCase in an older release (alerts on testing)", "own": ["alerts.neon"], "known": ["alerts.neon"],
-   "expected": "alerts.neon:cancel_alert",
-   "messages": [["alerts.neon:CancelAlert", {}]],
-   "kind": "hit"},
+  {"name": "CamelCase in an older release (alerts on testing)", "own": ["alerts.neon"], "known": ["alerts.neon"], "expected": "alerts.neon:cancel_alert", "messages": [["alerts.neon:CancelAlert", {}]], "kind": "hit"},
 
-  {"name": "padatious dots vs padacioso underscores", "own": ["date.ovos"], "known": ["date.ovos"],
-   "expected": "date.ovos:what_time_is_it",
-   "messages": [["date.ovos:what.time.is.it.intent", {}]],
-   "kind": "hit"},
+  {"name": "padatious dots vs padacioso underscores", "own": ["date.ovos"], "known": ["date.ovos"], "expected": "date.ovos:what_time_is_it", "messages": [["date.ovos:what.time.is.it.intent", {}]], "kind": "hit"},
 
-  {"name": "Name.intent on stable's workshop", "own": ["date.ovos"], "known": ["date.ovos"],
-   "expected": "date.ovos:WhatDay",
-   "messages": [["date.ovos:WhatDay.intent", {}]],
-   "kind": "hit"},
+  {"name": "Name.intent on stable's workshop", "own": ["date.ovos"], "known": ["date.ovos"], "expected": "date.ovos:WhatDay", "messages": [["date.ovos:WhatDay.intent", {}]], "kind": "hit"},
 
-  {"name": "own skill, other intent", "own": ["date.ovos"], "known": ["date.ovos"],
-   "expected": "date.ovos:what_day",
-   "messages": [["date.ovos:what_time", {}]],
-   "kind": "wrong_intent", "fired": ["date.ovos:what_time"]},
+  {"name": "own skill, other intent", "own": ["date.ovos"], "known": ["date.ovos"], "expected": "date.ovos:what_day", "messages": [["date.ovos:what_time", {}]], "kind": "wrong_intent", "fired": ["date.ovos:what_time"]},
 
-  {"name": "handler start names count as fired", "own": ["date.ovos"], "known": ["date.ovos"],
-   "expected": "date.ovos:what_day",
-   "messages": [["mycroft.skill.handler.start", {"name": "date.ovos:what_day"}, {"skill_id": "date.ovos"}]],
-   "kind": "hit", "via": "skill"},
+  {"name": "handler start names count as fired", "own": ["date.ovos"], "known": ["date.ovos"], "expected": "date.ovos:what_day", "messages": [["mycroft.skill.handler.start", {"name": "date.ovos:what_day"}, {"skill_id": "date.ovos"}]], "kind": "hit", "via": "skill"},
 
-  {"name": "unmatched means nobody, even if something spoke", "own": ["weather.ovos"], "known": ["weather.ovos", "unknown.ovos"],
-   "messages": [["speak", {"utterance": "I don't know"}, {"skill_id": "unknown.ovos"}],
-                ["ovos.intent.unmatched", {}]],
-   "kind": "unhandled"},
+  {"name": "unmatched means nobody, even if something spoke", "own": ["weather.ovos"], "known": ["weather.ovos", "unknown.ovos"], "messages": [["speak", {"utterance": "I don't know"}, {"skill_id": "unknown.ovos"}], ["ovos.intent.unmatched", {}]], "kind": "unhandled"},
 
-  {"name": "nothing at all, caller timed out", "own": ["weather.ovos"], "known": ["weather.ovos"], "hung": true,
-   "messages": [["recognizer_loop:utterance", {}]],
-   "kind": "hang", "detail": "no response"},
+  {"name": "nothing at all, caller timed out", "own": ["weather.ovos"], "known": ["weather.ovos"], "hung": true, "messages": [["recognizer_loop:utterance", {}]], "kind": "hang", "detail": "no response"},
 
-  {"name": "a stage hangs after a pipeline message", "own": ["weather.ovos"], "known": ["weather.ovos"], "hung": true,
-   "messages": [["question:query", {"phrase": "who is x"}]],
-   "kind": "hang"},
+  {"name": "a stage hangs after a pipeline message", "own": ["weather.ovos"], "known": ["weather.ovos"], "hung": true, "messages": [["question:query", {"phrase": "who is x"}]], "kind": "hang"},
 
-  {"name": "OCP plays the skill's result", "own": ["metronome.andlo"], "known": ["metronome.andlo"],
-   "expected": "metronome.andlo:start_metronome",
-   "messages": [["ocp:play", {}],
-                ["ovos.common_play.play", {"media": {"skill_id": "metronome.andlo", "uri": "x"}}]],
-   "kind": "hit", "via": "ocp"},
+  {"name": "OCP plays the skill's result", "own": ["metronome.andlo"], "known": ["metronome.andlo"], "expected": "metronome.andlo:start_metronome", "messages": [["ocp:play", {}], ["ovos.common_play.play", {"media": {"skill_id": "metronome.andlo", "uri": "x"}}]], "kind": "hit", "via": "ocp"},
 
-  {"name": "OCP without a player: populate's first track", "own": ["metronome.andlo"], "known": ["metronome.andlo", "radio.ovos"],
-   "intent_type": "ocp",
-   "messages": [["ocp:play", {}],
-                ["ovos.common_play.search.populate", {"playlist": [{"skill_id": "metronome.andlo"}, {"skill_id": "radio.ovos"}]}]],
-   "kind": "hit", "via": "ocp"},
+  {"name": "OCP without a player: populate's first track", "own": ["metronome.andlo"], "known": ["metronome.andlo", "radio.ovos"], "intent_type": "ocp", "messages": [["ocp:play", {}], ["ovos.common_play.search.populate", {"playlist": [{"skill_id": "metronome.andlo"}, {"skill_id": "radio.ovos"}]}]], "kind": "hit", "via": "ocp"},
 
-  {"name": "row must go through OCP but padatious took it", "own": ["metronome.andlo"], "known": ["metronome.andlo"],
-   "intent_type": "ocp", "expected": "metronome.andlo:start_metronome",
-   "messages": [["metronome.andlo:start_metronome", {}]],
-   "kind": "wrong_intent"},
+  {"name": "row must go through OCP but padatious took it", "own": ["metronome.andlo"], "known": ["metronome.andlo"], "intent_type": "ocp", "expected": "metronome.andlo:start_metronome", "messages": [["metronome.andlo:start_metronome", {}]], "kind": "wrong_intent"},
 
-  {"name": "reading pipeline fetches from the provider", "own": ["grimm-tales.andlo"], "known": ["grimm-tales.andlo"],
-   "messages": [["ovos-common-reading-pipeline-plugin.andlo:read_content", {}],
-                ["ovos.common_reading.search", {}],
-                ["ovos.common_reading.fetch_content.grimm-tales.andlo", {}],
-                ["speak", {"utterance": "Once upon a time"}, {"skill_id": "ovos-common-reading-pipeline-plugin.andlo"}]],
-   "kind": "hit", "taker": "grimm-tales.andlo", "via": "provider"},
+  {"name": "reading pipeline fetches from the provider", "own": ["grimm-tales.andlo"], "known": ["grimm-tales.andlo"], "messages": [["ovos-common-reading-pipeline-plugin.andlo:read_content", {}], ["ovos.common_reading.search", {}], ["ovos.common_reading.fetch_content.grimm-tales.andlo", {}], ["speak", {"utterance": "Once upon a time"}, {"skill_id": "ovos-common-reading-pipeline-plugin.andlo"}]], "kind": "hit", "taker": "grimm-tales.andlo", "via": "provider"},
 
-  {"name": "reading pipeline matched, no provider behind it", "own": ["grimm-tales.andlo"], "known": ["grimm-tales.andlo"],
-   "messages": [["ovos-common-reading-pipeline-plugin.andlo:read_content", {}],
-                ["ovos.common_reading.search", {}]],
-   "kind": "unhandled"},
+  {"name": "reading pipeline matched, no provider behind it", "own": ["grimm-tales.andlo"], "known": ["grimm-tales.andlo"], "messages": [["ovos-common-reading-pipeline-plugin.andlo:read_content", {}], ["ovos.common_reading.search", {}]], "kind": "unhandled"},
 
-  {"name": "own skill's pending get_response swallowed it", "own": ["timer.ovos"], "known": ["timer.ovos"],
-   "expected": "timer.ovos:start_timer",
-   "messages": [["timer.ovos.converse.get_response", {}]],
-   "kind": "captured"},
+  {"name": "own skill's pending get_response swallowed it", "own": ["timer.ovos"], "known": ["timer.ovos"], "expected": "timer.ovos:start_timer", "messages": [["timer.ovos.converse.get_response", {}]], "kind": "captured"},
 
-  {"name": "the question machinery is not a capture", "own": ["timer.ovos"], "known": ["timer.ovos"],
-   "expected": "timer.ovos:start_timer",
-   "messages": [["timer.ovos:start_timer", {}],
-                ["skill.converse.get_response.enable", {}, {"skill_id": "timer.ovos"}],
-                ["skill.converse.get_response.disable", {}]],
-   "kind": "hit"},
+  {"name": "the question machinery is not a capture", "own": ["timer.ovos"], "known": ["timer.ovos"], "expected": "timer.ovos:start_timer", "messages": [["timer.ovos:start_timer", {}], ["skill.converse.get_response.enable", {}, {"skill_id": "timer.ovos"}], ["skill.converse.get_response.disable", {}]], "kind": "hit"},
 
-  {"name": "another skill took it", "own": ["jokes.andlo"], "known": ["jokes.andlo", "wiki.ovos"],
-   "messages": [["wiki.ovos:search", {}]],
-   "kind": "other", "taker": "wiki.ovos"},
+  {"name": "another skill took it", "own": ["jokes.andlo"], "known": ["jokes.andlo", "wiki.ovos"], "messages": [["wiki.ovos:search", {}]], "kind": "other", "taker": "wiki.ovos"},
 
-  {"name": "a fallback that answered", "own": ["unknown.ovos"], "known": ["unknown.ovos"],
-   "messages": [["ovos.skills.fallback.ping", {}],
-                ["ovos.skills.fallback.unknown.ovos.response", {"result": true}]],
-   "kind": "hit", "via": "skill"},
+  {"name": "a fallback that answered", "own": ["unknown.ovos"], "known": ["unknown.ovos"], "messages": [["ovos.skills.fallback.ping", {}], ["ovos.skills.fallback.unknown.ovos.response", {"result": true}]], "kind": "hit", "via": "skill"},
 
-  {"name": "a fallback that declined is no claim", "own": ["unknown.ovos"], "known": ["unknown.ovos"],
-   "messages": [["ovos.skills.fallback.unknown.ovos.response", {"result": false}]],
-   "kind": "unhandled"},
+  {"name": "a fallback that declined is no claim", "own": ["unknown.ovos"], "known": ["unknown.ovos"], "messages": [["ovos.skills.fallback.unknown.ovos.response", {"result": false}]], "kind": "unhandled"},
 
-  {"name": "common query's answer", "own": ["wiki.ovos"], "known": ["wiki.ovos"],
-   "messages": [["question:query", {}], ["question:action", {"skill_id": "wiki.ovos"}]],
-   "kind": "hit", "via": "skill"},
+  {"name": "common query's answer", "own": ["wiki.ovos"], "known": ["wiki.ovos"], "messages": [["question:query", {}], ["question:action", {"skill_id": "wiki.ovos"}]], "kind": "hit", "via": "skill"},
 
-  {"name": "core 3 speaks on ovos.utterance.speak", "own": ["hello.andlo"], "known": ["hello.andlo"],
-   "messages": [["ovos.utterance.speak", {"utterance": "hi"}, {"skill_id": "hello.andlo"}]],
-   "kind": "hit", "via": "speak"},
+  {"name": "core 3 speaks on ovos.utterance.speak", "own": ["hello.andlo"], "known": ["hello.andlo"], "messages": [["ovos.utterance.speak", {"utterance": "hi"}, {"skill_id": "hello.andlo"}]], "kind": "hit", "via": "speak"},
 
-  {"name": "an intent beats an earlier speaker", "own": ["jokes.andlo"], "known": ["jokes.andlo", "chatty.x"],
-   "messages": [["speak", {"utterance": "hm"}, {"skill_id": "chatty.x"}],
-                ["jokes.andlo:joke", {}]],
-   "kind": "hit", "taker": "jokes.andlo"},
+  {"name": "an intent beats an earlier speaker", "own": ["jokes.andlo"], "known": ["jokes.andlo", "chatty.x"], "messages": [["speak", {"utterance": "hm"}, {"skill_id": "chatty.x"}], ["jokes.andlo:joke", {}]], "kind": "hit", "taker": "jokes.andlo"},
 
-  {"name": "a pipeline plugin's intent without known ids", "own": ["grimm-tales.andlo"], "no_known": true,
-   "messages": [["ovos-common-reading-pipeline-plugin.andlo:read_content", {}]],
-   "kind": "other", "taker": "ovos-common-reading-pipeline-plugin.andlo"},
+  {"name": "a pipeline plugin's intent without known ids", "own": ["grimm-tales.andlo"], "no_known": true, "messages": [["ovos-common-reading-pipeline-plugin.andlo:read_content", {}]], "kind": "other", "taker": "ovos-common-reading-pipeline-plugin.andlo"},
 
-  {"name": "messages are plain dicts with 'type'", "own": ["weather.ovos"], "known": ["weather.ovos"], "as_dicts": true,
-   "messages": [["weather.ovos:current_weather", {}]],
-   "kind": "hit"}
+  {"name": "messages are plain dicts with 'type'", "own": ["weather.ovos"], "known": ["weather.ovos"], "as_dicts": true, "messages": [["weather.ovos:current_weather", {}]], "kind": "hit"},
+
+  {"name": "another session's dispatch is not a claim", "session": "row", "own": ["jokes.andlo"], "known": ["jokes.andlo", "wiki.ovos"], "messages": [["wiki.ovos:search", {}, {"session": {"session_id": "other"}}]], "kind": "unhandled"},
+
+  {"name": "another session's unmatched does not mask a real claim", "session": "row", "own": ["jokes.andlo"], "known": ["jokes.andlo"], "messages": [["ovos.intent.unmatched", {}, {"session": {"session_id": "other"}}], ["jokes.andlo:joke", {}, {"session": {"session_id": "row"}}]], "kind": "hit"},
+
+  {"name": "own session's unmatched is authoritative", "session": "row", "own": ["jokes.andlo"], "known": ["jokes.andlo"], "messages": [["ovos.intent.unmatched", {}, {"session": {"session_id": "row"}}]], "kind": "unhandled"},
+
+  {"name": "a sessionless handler of an unrelated scheduled event is not a claim", "session": "row", "own": ["jokes.andlo"], "known": ["jokes.andlo", "news.ovos"], "messages": [["mycroft.skill.handler.start", {"name": "news.ovos:update"}, {"skill_id": "news.ovos"}], ["ovos.skills.fallback.ping", {}, {"session": {"session_id": "row"}}]], "kind": "unhandled"},
+
+  {"name": "a sessionless dispatch still counts", "session": "row", "own": ["jokes.andlo"], "known": ["jokes.andlo"], "messages": [["jokes.andlo:joke", {}]], "kind": "hit"}
 ]

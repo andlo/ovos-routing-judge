@@ -27,7 +27,7 @@ def _messages(case):
 @pytest.mark.parametrize("case", CASES, ids=[c["name"] for c in CASES])
 def test_case(case):
     known = None if case.get("no_known") else case["known"]
-    claim = Claim.from_messages(_messages(case), known or ())
+    claim = Claim.from_messages(_messages(case), known or (), session_id=case.get("session"))
     v = judge(claim, case["own"], expected=case.get("expected"), intent_type=case.get("intent_type"),
               hung=case.get("hung", False), known_ids=known)
     assert v.kind == case["kind"], v
