@@ -69,5 +69,11 @@
 
   {"name": "not strict: known ids still win", "own": ["grimm-tales.andlo"], "known": ["grimm-tales.andlo"], "strict": false, "messages": [["ovos-common-reading-pipeline-plugin.andlo:read_content", {}], ["ovos.common_reading.fetch_content.grimm-tales.andlo", {}]], "kind": "hit", "taker": "grimm-tales.andlo"},
 
-  {"name": "a fallback's ovos.intent.matched reads as <id>:fallback", "own": ["volume.ovos"], "known": ["volume.ovos", "ddg.ovos"], "messages": [["ovos.intent.matched", {"intent_name": "ovos.skills.fallback.ddg.ovos.request", "skill_id": "ddg.ovos"}]], "kind": "other", "taker": "ddg.ovos", "detail": "ddg.ovos:fallback"}
+  {"name": "a fallback's ovos.intent.matched reads as <id>:fallback", "own": ["volume.ovos"], "known": ["volume.ovos", "ddg.ovos"], "messages": [["ovos.intent.matched", {"intent_name": "ovos.skills.fallback.ddg.ovos.request", "skill_id": "ddg.ovos"}]], "kind": "other", "taker": "ddg.ovos", "detail": "ddg.ovos:fallback"},
+
+  {"name": "expected an intent, answered through common query", "own": ["calculator.andlo"], "known": ["calculator.andlo"], "expected": "calculator.andlo:calculate", "messages": [["question:query", {}], ["question:action", {"skill_id": "calculator.andlo"}]], "kind": "wrong_intent", "fired": ["calculator.andlo:common_query"]},
+
+  {"name": "expected an intent, answered by its fallback", "own": ["app-launcher.ovos"], "known": ["app-launcher.ovos"], "expected": "app-launcher.ovos:launch", "messages": [["ovos.skills.fallback.app-launcher.ovos.response", {"result": true}]], "kind": "wrong_intent", "fired": ["app-launcher.ovos:fallback"]},
+
+  {"name": "a row that names common_query", "own": ["wiki.ovos"], "known": ["wiki.ovos"], "expected": "wiki.ovos:common_query", "messages": [["question:action", {"skill_id": "wiki.ovos"}]], "kind": "hit"}
 ]

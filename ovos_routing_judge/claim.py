@@ -12,7 +12,8 @@ dispatched to:
             or its pending get_response/converse capturing the utterance
   PROVIDER  a pipeline plugin asked it for content (common-reading fetch)
   OCP       OCP picked its result (play, or search.populate without a player)
-  SKILL     handler start, a fallback that answered, common query's answer
+  SKILL     handler start, a fallback that answered (fired as
+            '<id>:fallback'), common query's answer ('<id>:common_query')
   SPEAK     it spoke in this session
 
 `ovos.intent.unmatched` means nobody, whatever else was seen.
@@ -185,7 +186,8 @@ class Claim:
             if prefix in known or (prefix not in _COLON_TYPES_NOT_SKILLS and looks_like_component_id(prefix)):
                 self._add(INTENT, prefix, msg_type, msg_type)
             elif msg_type == "question:action":
-                self._add(SKILL, data.get("skill_id"), "", msg_type)
+                skill = data.get("skill_id")
+                self._add(SKILL, skill, f"{skill}:common_query" if skill else "", msg_type)
             return
         if msg_type == "mycroft.skill.handler.start":
             name = str(data.get("name") or "")
@@ -193,7 +195,8 @@ class Claim:
             self._add(SKILL, skill, name if ":" in name else "", msg_type)
         elif msg_type.startswith(FALLBACK_PREFIX) and msg_type.endswith(".response"):
             if data.get("result"):
-                self._add(SKILL, msg_type[len(FALLBACK_PREFIX):-len(".response")], "", msg_type)
+                skill = msg_type[len(FALLBACK_PREFIX):-len(".response")]
+                self._add(SKILL, skill, f"{skill}:fallback", msg_type)
         elif msg_type == READING_SEARCH:
             self.awaiting_provider = True
         elif msg_type.startswith(READING_FETCH_PREFIX) and not msg_type.endswith(".response"):

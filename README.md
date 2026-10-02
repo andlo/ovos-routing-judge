@@ -63,8 +63,9 @@ Signals come in tiers; the taker is the first known skill in the best tier:
    (`ovos.common_reading.fetch_content.<skill_id>`)
 3. **ocp**: OCP picked its result (`ovos.common_play.play` media, or the
    first track of `play` / `search.populate` without a player)
-4. **skill**: handler start, a fallback that answered, common query's
-   `question:action`
+4. **skill**: handler start, a fallback that answered (fired as
+   `<skill_id>:fallback`), common query's `question:action` (fired as
+   `<skill_id>:common_query`)
 5. **speak**: it spoke in this session (`speak` or core 3's `ovos.utterance.speak`)
 
 `ovos.intent.unmatched` means nobody, whatever else was seen.

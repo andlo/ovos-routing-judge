@@ -11,9 +11,10 @@
                 did not return, or a device that never answered)
 
 A row without an expected intent is a hit when its skill took it at all.
-So is a row whose skill took it with no intent of its own visible (a
-handler or speech without a dispatched topic): `wrong_intent` needs
-evidence of ANOTHER intent of the same skill.
+So is a row whose skill took it with nothing visible about how (only a
+handler start or speech): `wrong_intent` needs evidence of another way
+in - another intent, or its fallback (`<id>:fallback`) or common query
+answer (`<id>:common_query`) when the row names an intent.
 A row with `"intent_type": "ocp"` must go through OCP's search; one
 without is also a hit when OCP handed the sentence to the skill (golden
 files written before a skill answered OCP name only its intent).
