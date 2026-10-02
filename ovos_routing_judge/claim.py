@@ -149,6 +149,10 @@ class Claim:
         if msg_type == "ovos.intent.matched":
             name = data.get("intent_name") or data.get("intent_type") or data.get("match_type") or ""
             skill = data.get("skill_id") or context.get("skill_id")
+            if name.startswith(FALLBACK_PREFIX):
+                # a fallback stage's match names its request topic
+                # (ovos.skills.fallback.<id>.request) - shown as <id>:fallback
+                name = "fallback"
             if name and ":" not in name and skill:
                 name = f"{skill}:{name}"
             self._add(INTENT, skill or (name.split(":", 1)[0] if ":" in name else ""), name, msg_type)

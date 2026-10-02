@@ -67,5 +67,7 @@
 
   {"name": "strict: an unknown skill's result is nobody", "own": ["soundboard.andlo"], "known": ["soundboard.andlo"], "messages": [["ocp:play", {}], ["ovos.common_play.play", {"media": {"skill_id": "white-noise.andlo"}}]], "kind": "unhandled"},
 
-  {"name": "not strict: known ids still win", "own": ["grimm-tales.andlo"], "known": ["grimm-tales.andlo"], "strict": false, "messages": [["ovos-common-reading-pipeline-plugin.andlo:read_content", {}], ["ovos.common_reading.fetch_content.grimm-tales.andlo", {}]], "kind": "hit", "taker": "grimm-tales.andlo"}
+  {"name": "not strict: known ids still win", "own": ["grimm-tales.andlo"], "known": ["grimm-tales.andlo"], "strict": false, "messages": [["ovos-common-reading-pipeline-plugin.andlo:read_content", {}], ["ovos.common_reading.fetch_content.grimm-tales.andlo", {}]], "kind": "hit", "taker": "grimm-tales.andlo"},
+
+  {"name": "a fallback's ovos.intent.matched reads as <id>:fallback", "own": ["volume.ovos"], "known": ["volume.ovos", "ddg.ovos"], "messages": [["ovos.intent.matched", {"intent_name": "ovos.skills.fallback.ddg.ovos.request", "skill_id": "ddg.ovos"}]], "kind": "other", "taker": "ddg.ovos", "detail": "ddg.ovos:fallback"}
 ]
