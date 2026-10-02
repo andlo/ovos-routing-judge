@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ovos-routing-judge"
+dynamic = ["version"]
+description = "Who took an utterance, and was it the right skill? One routing judge for OVOS golden-utterance tests."
+readme = "README.md"
+license = {text = "Apache-2.0"}
+authors = [{name = "Andreas Lorensen", email = "andlo@outlook.dk"}]
+requires-python = ">=3.9"
+dependencies = []
+keywords = ["ovos", "openvoiceos", "testing", "intent", "routing", "golden utterances"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: Apache Software License",
+    "Topic :: Software Development :: Testing",
+]
+
+[project.urls]
+Source = "https://github.com/andlo/ovos-routing-judge"
+"Bug Tracker" = "https://github.com/andlo/ovos-routing-judge/issues"
+
+[project.optional-dependencies]
+test = ["pytest"]
+
+[tool.setuptools.dynamic]
+version = {attr = "ovos_routing_judge.version.__version__"}
+
+[tool.setuptools.packages.find]
+include = ["ovos_routing_judge*"]
