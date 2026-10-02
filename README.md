@@ -36,12 +36,18 @@ v.detail   # one line on what happened
 `Claim.observe(message, known_ids)` folds messages in one at a time, for a
 live run that wants to know as soon as something matched.
 
+`known_ids` is a filter by default: only loaded skills can take a row, so a
+pipeline plugin's own intent with nothing behind it is `unhandled`. A caller
+whose skill list may be incomplete (a live device with skills in other
+containers) passes `strict_known=False`: known skills still win, anyone else
+is the fallback.
+
 ## Verdicts
 
 | kind | meaning |
 |---|---|
 | `hit` | the row's skill took it (with the expected intent, when the row names one) |
-| `wrong_intent` | the row's skill took it with another intent |
+| `wrong_intent` | the row's skill took it, and another of its intents is what fired (no visible intent at all is a `hit`) |
 | `captured` | the row's skill was waiting for an answer (get_response / converse) and took the sentence as that answer |
 | `other` | another skill took it (`taker`); a store can split this further |
 | `unhandled` | nobody took it, or only a pipeline stage with no skill behind it |

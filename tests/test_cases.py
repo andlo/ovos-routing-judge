@@ -29,7 +29,7 @@ def test_case(case):
     known = None if case.get("no_known") else case["known"]
     claim = Claim.from_messages(_messages(case), known or (), session_id=case.get("session"))
     v = judge(claim, case["own"], expected=case.get("expected"), intent_type=case.get("intent_type"),
-              hung=case.get("hung", False), known_ids=known)
+              hung=case.get("hung", False), known_ids=known, strict_known=case.get("strict", True))
     assert v.kind == case["kind"], v
     for key in ("taker", "via", "detail"):
         if key in case:

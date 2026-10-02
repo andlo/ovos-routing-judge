@@ -57,5 +57,15 @@
 
   {"name": "a sessionless handler of an unrelated scheduled event is not a claim", "session": "row", "own": ["jokes.andlo"], "known": ["jokes.andlo", "news.ovos"], "messages": [["mycroft.skill.handler.start", {"name": "news.ovos:update"}, {"skill_id": "news.ovos"}], ["ovos.skills.fallback.ping", {}, {"session": {"session_id": "row"}}]], "kind": "unhandled"},
 
-  {"name": "a sessionless dispatch still counts", "session": "row", "own": ["jokes.andlo"], "known": ["jokes.andlo"], "messages": [["jokes.andlo:joke", {}]], "kind": "hit"}
+  {"name": "a sessionless dispatch still counts", "session": "row", "own": ["jokes.andlo"], "known": ["jokes.andlo"], "messages": [["jokes.andlo:joke", {}]], "kind": "hit"},
+
+  {"name": "own skill took it with no intent visible", "own": ["hello.andlo"], "known": ["hello.andlo"], "expected": "hello.andlo:greet", "messages": [["mycroft.skill.handler.start", {}, {"skill_id": "hello.andlo"}]], "kind": "hit", "via": "skill"},
+
+  {"name": "OCP took over, no result of anyone", "own": ["weather.ovos"], "known": ["weather.ovos"], "hung": true, "expected": "weather.ovos:current_weather", "messages": [["ocp:play", {}]], "kind": "hang", "detail": "ocp:play"},
+
+  {"name": "OCP played another skill's result", "own": ["soundboard.andlo"], "known": ["soundboard.andlo"], "strict": false, "messages": [["ocp:play", {}], ["ovos.common_play.play", {"media": {"skill_id": "white-noise.andlo"}}]], "kind": "other", "taker": "white-noise.andlo", "detail": "ocp:play, played by white-noise.andlo"},
+
+  {"name": "strict: an unknown skill's result is nobody", "own": ["soundboard.andlo"], "known": ["soundboard.andlo"], "messages": [["ocp:play", {}], ["ovos.common_play.play", {"media": {"skill_id": "white-noise.andlo"}}]], "kind": "unhandled"},
+
+  {"name": "not strict: known ids still win", "own": ["grimm-tales.andlo"], "known": ["grimm-tales.andlo"], "strict": false, "messages": [["ovos-common-reading-pipeline-plugin.andlo:read_content", {}], ["ovos.common_reading.fetch_content.grimm-tales.andlo", {}]], "kind": "hit", "taker": "grimm-tales.andlo"}
 ]

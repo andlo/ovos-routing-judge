@@ -11,6 +11,9 @@
                 did not return, or a device that never answered)
 
 A row without an expected intent is a hit when its skill took it at all.
+So is a row whose skill took it with no intent of its own visible (a
+handler or speech without a dispatched topic): `wrong_intent` needs
+evidence of ANOTHER intent of the same skill.
 A row with `"intent_type": "ocp"` must go through OCP's search; one
 without is also a hit when OCP handed the sentence to the skill (golden
 files written before a skill answered OCP name only its intent).
@@ -94,12 +97,14 @@ def describe(claim: Claim, known_ids: Optional[Iterable[str]] = None) -> str:
 
 def judge(claim: Claim, own_ids: Iterable[str], expected: Optional[str] = None,
           intent_type: Optional[str] = None, hung: bool = False,
-          known_ids: Optional[Iterable[str]] = None) -> Verdict:
+          known_ids: Optional[Iterable[str]] = None, strict_known: bool = True) -> Verdict:
     """The verdict for one row. `own_ids`: the skill ids the row is about
     (a package can register more than one). `known_ids`: the skills loaded
     in this core; when given, only those (and own_ids) can take a row, so a
     pipeline plugin's own intent with no provider behind it is `unhandled`.
-    `hung`: the caller gave up waiting."""
+    `hung`: the caller gave up waiting. `strict_known=False`: prefer
+    `known_ids` but let any skill take a row when none of them did (see
+    Claim.taker)."""
     own = set(own_ids)
     known = None if known_ids is None else set(known_ids) | own
     text = describe(claim)
@@ -108,7 +113,7 @@ def judge(claim: Claim, own_ids: Iterable[str], expected: Optional[str] = None,
         return Verdict(CAPTURED, claim.captured_by, tuple(claim.fired(claim.captured_by)),
                        "intent", text)
 
-    taker = claim.taker(known)
+    taker = claim.taker(known, strict=strict_known)
     if taker is None:
         return Verdict(HANG if hung else UNHANDLED, None, (), None,
                        "no response" if hung and claim.empty else text)
@@ -123,5 +128,6 @@ def judge(claim: Claim, own_ids: Iterable[str], expected: Optional[str] = None,
     elif not expected:
         ok = True
     else:
-        ok = OCP_FIRED in fired or intent_matches(expected, fired, taker)
+        intents = [f for f in fired if f != OCP_FIRED]
+        ok = OCP_FIRED in fired or not intents or intent_matches(expected, intents, taker)
     return Verdict(HIT if ok else WRONG_INTENT, taker, fired, via, text)

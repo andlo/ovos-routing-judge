@@ -102,6 +102,7 @@ class Claim:
     failed: bool = False             # intent_failure / complete_intent_failure seen
     captured_by: Optional[str] = None  # a pending get_response/converse took it
     ocp: bool = False                # OCP's pipeline took it (an ocp:* topic)
+    ocp_topics: List[str] = field(default_factory=list)  # the ocp:* topics seen
     provider: str = ""               # the skill a pipeline plugin or OCP got it from
     provider_via: str = ""           # "the reading pipeline" or "OCP"
     awaiting_provider: bool = False  # a search went out, no provider yet
@@ -155,6 +156,8 @@ class Claim:
         if msg_type.startswith("ocp:"):
             # OCP's pipeline took it; which skill serves it comes with play/populate
             self.ocp = True
+            if msg_type not in self.ocp_topics:
+                self.ocp_topics.append(msg_type)
             if msg_type == OCP_FIRED:
                 self.awaiting_provider = True
             return
@@ -207,10 +210,13 @@ class Claim:
 
     # ---------------------------------------------------------------- reading
 
-    def taker(self, known_ids: Optional[Iterable[str]] = None) -> Optional[str]:
+    def taker(self, known_ids: Optional[Iterable[str]] = None, strict: bool = True) -> Optional[str]:
         """Who took the utterance: the first skill in the best tier. With
         `known_ids`, only those count (a pipeline plugin's own intent with
-        no provider behind it is then nobody); without, anyone does."""
+        no provider behind it is then nobody); without, anyone does.
+        `strict=False` prefers known ids but falls back to anyone, for a
+        caller whose list of loaded skills may be incomplete (a live device
+        with skills in other containers)."""
         if self.unmatched:
             return None
         known = None if known_ids is None else set(known_ids)
@@ -218,6 +224,8 @@ class Claim:
             for s in self.signals:
                 if s.tier == tier and (known is None or s.skill_id in known):
                     return s.skill_id
+        if known is not None and not strict:
+            return self.taker(None)
         return None
 
     def tier_of(self, skill_id: str) -> Optional[str]:
@@ -244,11 +252,12 @@ class Claim:
 
     @property
     def intents(self) -> List[str]:
+        """What matched, in order: dispatched intents, then OCP's own topics."""
         out = []
         for s in self.signals:
             if s.tier == INTENT and s.topic and s.topic not in out:
                 out.append(s.topic)
-        return out
+        return out + [t for t in self.ocp_topics if t not in out]
 
     @property
     def empty(self) -> bool:
