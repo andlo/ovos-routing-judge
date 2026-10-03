@@ -185,8 +185,11 @@ class Claim:
             prefix = msg_type.split(":", 1)[0]
             if prefix in known or (prefix not in _COLON_TYPES_NOT_SKILLS and looks_like_component_id(prefix)):
                 self._add(INTENT, prefix, msg_type, msg_type)
-            elif msg_type == "question:action":
-                skill = data.get("skill_id")
+            elif msg_type == "question:action" or msg_type.startswith("question:action."):
+                # common query hands the answer to the winner: older cores
+                # emit question:action with skill_id in data, newer ones
+                # question:action.<skill_id>
+                skill = data.get("skill_id") or msg_type[len("question:action."):] or context.get("skill_id")
                 self._add(SKILL, skill, f"{skill}:common_query" if skill else "", msg_type)
             return
         if msg_type == "mycroft.skill.handler.start":

@@ -75,5 +75,7 @@
 
   {"name": "expected an intent, answered by its fallback", "own": ["app-launcher.ovos"], "known": ["app-launcher.ovos"], "expected": "app-launcher.ovos:launch", "messages": [["ovos.skills.fallback.app-launcher.ovos.response", {"result": true}]], "kind": "wrong_intent", "fired": ["app-launcher.ovos:fallback"]},
 
-  {"name": "a row that names common_query", "own": ["wiki.ovos"], "known": ["wiki.ovos"], "expected": "wiki.ovos:common_query", "messages": [["question:action", {"skill_id": "wiki.ovos"}]], "kind": "hit"}
+  {"name": "a row that names common_query", "own": ["wiki.ovos"], "known": ["wiki.ovos"], "expected": "wiki.ovos:common_query", "messages": [["question:action", {"skill_id": "wiki.ovos"}]], "kind": "hit"},
+
+  {"name": "newer common query: question:action.<skill_id> (calculator on testing)", "own": ["calculator.andlo"], "known": ["calculator.andlo", "ddg.ovos"], "expected": "calculator.andlo:calculate", "messages": [["question:query", {"phrase": "what is 7 times 15"}], ["question:query.response", {"skill_id": "ddg.ovos", "searching": true}], ["calculator.andlo.activate", {}, {"skill_id": "calculator.andlo"}], ["question:action.calculator.andlo", {"utterance": "what is 7 times 15"}, {"skill_id": "calculator.andlo"}], ["mycroft.skill.handler.start", {"name": "Calculator.__handle_skill_query_action"}, {"skill_id": "calculator.andlo"}], ["speak", {"utterance": "105"}, {"skill_id": "calculator.andlo"}]], "kind": "wrong_intent", "fired": ["calculator.andlo:common_query"]}
 ]
